@@ -166,26 +166,30 @@ export default function App() {
   }
   
 
-  function buildShareText() {
+  function buildShareText(p, s) {
     const typeName = p?.meta?.name || p?.key || "Мой тип";
-    const disc = p?.meta?.disc?.code ? `${p.meta.disc.code} - ${p.meta.disc.label}` : "";
+    const disc = p?.meta?.disc?.code
+      ? `${p.meta.disc.code} - ${p.meta.disc.label}`
+      : "";
     const jung = p?.meta?.jung?.label || "";
     const archetype = p?.meta?.archetype || "";
-    const second = s ? `\nВторичный вектор: ${s.meta?.name || s.key} (${s.pct}%)` : "";
+    const second = s
+      ? `\nВторичный вектор: ${s.meta?.name || s.key} (${s.pct}%)`
+      : "";
   
     const title = `Мой тип селлера: ${typeName}`;
     const meta = [disc, jung, archetype].filter(Boolean).join(" | ");
   
-    const appUrl = window.location.origin; // на Vercel будет корректно
-    return `${title}\n${meta}${second}\n\nПройди тест: ${appUrl}`;
+    return `${title}\n${meta}${second}\n\nВоспользуйся ботом: @disc_for_seller_bot`;
   }
+  
   
   
 
 
 async function shareResult() {
     try {
-      const text = buildShareText();
+      const text = buildShareText(p, s);
       const tg = getTelegram();
 
     // === ШАГ 2.2: отправляем данные о результате ===
