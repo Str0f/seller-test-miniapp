@@ -8,6 +8,13 @@ function clamp(n, min, max) {
   return Math.max(min, Math.min(max, n));
 }
 
+function track(event, params = {}) {
+  if (window.gtag) {
+    window.gtag("event", event, params);
+  }
+}
+
+
 /**
  * Считает суммарные баллы по типам, и возвращает профиль:
  * - primary (обязателен)
@@ -67,7 +74,12 @@ export default function App() {
   const total = questions.length;
   const AUTO_NEXT_DELAY_MS = 220;
 
-
+  useEffect(() => {
+    if (step === 0) {
+      track("start_test");
+    }
+  }, [step]);
+  
   const [step, setStep] = useState(0); // 0..total, где total = экран результата
   const [answersByQid, setAnswersByQid] = useState({}); // { [qid]: answerId }
   const [micro, setMicro] = useState(null);
@@ -173,14 +185,31 @@ async function shareResult() {
     try {
       const text = buildShareText();
       const tg = getTelegram();
-  
+
+    // === ШАГ 2.2: отправляем данные о результате ===
+      if (tg?.initDataUnsafe?.user) {
+        fetch("/api/track", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tg_user_id: tg.initDataUnsafe.user.id,
+            username: tg.initDataUnsafe.user.username || null,
+            primary: p?.key,
+            secondary: s?.key || null,
+            created_at: new Date().toISOString()
+          })
+        });
+      }
+      // === конец шага 2.2 ===
+
+    // Telegram share
       if (tg?.openTelegramLink) {
         const url = `https://t.me/share/url?url=${encodeURIComponent(window.location.origin)}&text=${encodeURIComponent(text)}`;
         tg.openTelegramLink(url);
         return;
       }
   
-      // fallback
+      // fallback для браузера
       await navigator.clipboard.writeText(text);
       alert("Скопировано. Вставь в Telegram и отправь.");
     } catch (e) {
@@ -241,6 +270,16 @@ async function shareResult() {
   if (isResult) {
     const p = profile.primary;
     const s = profile.secondary;
+
+    useEffect(() => {
+      if (isResult && profile.primary) {
+        track("finish_test", {
+          primary_type: profile.primary.key,
+          secondary_type: profile.secondary?.key || "none"
+        });
+      }
+    }, [isResult]);
+    
 
     return (
       <div className={styles.container}>
