@@ -289,11 +289,11 @@ async function shareResult() {
     const s = profile.secondary;
 
 
-    useEffect(() => {
-      if (isTelegram) {
-        sendTrackResult();
-      }
-    }, []);
+//    useEffect(() => {
+//      if (isTelegram) {
+//        sendTrackResult();
+//      }
+//    }, []);
     
 
     return (
