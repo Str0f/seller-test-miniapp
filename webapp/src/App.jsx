@@ -280,22 +280,26 @@ export default function App() {
       </div>
     </div>
 
-    <div className={styles.actions}>
-      <button type="button" className={styles.secondaryBtn} onClick={restart}>
-        Пройти заново
-      </button>
-    </div>
-    <div className={styles.actions}>
-  {isTelegram && (
-    <button type="button" className={styles.primaryBtn} onClick={shareResult}>
-      Поделиться
-    </button>
-  )}
+              <div className={styles.actions}>
+                {isTelegram && (
+                  <button
+                    type="button"
+                    className={styles.primaryBtn}
+                    onClick={shareResult}
+                  >
+                    Поделиться
+                  </button>
+                )}
 
-  <button type="button" className={styles.secondaryBtn} onClick={restart}>
-    Пройти заново
-  </button>
-</div>
+                <button
+                  type="button"
+                  className={styles.secondaryBtn}
+                  onClick={restart}
+                >
+                  Пройти заново
+                </button>
+              </div>
+
 
   </div>
 </div>
@@ -383,11 +387,7 @@ export default function App() {
 </details>
 
 
-        <div className={styles.footer}>
-          <button type="button" className={styles.primaryBtn} onClick={restart}>
-            Пройти заново
-          </button>
-        </div>
+        
       </div>
     );
   }
