@@ -108,6 +108,9 @@ export default function App() {
   }, [q, selectedId]);
 
   const profile = useMemo(() => computeProfile(data, answersByQid), [answersByQid]);
+  const p = profile.primary;
+  const s = profile.secondary;
+
 
 
   function pickMicroByWeights(weights) {
@@ -159,32 +162,32 @@ export default function App() {
     const title = `Мой тип селлера: ${typeName}`;
     const meta = [disc, jung, archetype].filter(Boolean).join(" | ");
   
-    return `${title}\n${meta}${second}\n\nПройди тест: ${window.location.origin}`;
+    const appUrl = window.location.origin; // на Vercel будет корректно
+    return `${title}\n${meta}${second}\n\nПройди тест: ${appUrl}`;
   }
   
+  
 
 
-  async function shareResult() {
-    const text = buildShareText();
-  
-    const tg = getTelegram?.() || null; // если у тебя есть getTelegram
-    // если getTelegram нет — ниже дам вариант без него
-  
-    if (tg) {
-      // Откроем "поделиться" через ссылку на Telegram share
-      const url = `https://t.me/share/url?url=${encodeURIComponent(window.location.origin)}&text=${encodeURIComponent(text)}`;
-      tg.openTelegramLink(url);
-      return;
-    }
-  
-    // fallback для браузера
+async function shareResult() {
     try {
+      const text = buildShareText();
+      const tg = getTelegram();
+  
+      if (tg?.openTelegramLink) {
+        const url = `https://t.me/share/url?url=${encodeURIComponent(window.location.origin)}&text=${encodeURIComponent(text)}`;
+        tg.openTelegramLink(url);
+        return;
+      }
+  
+      // fallback
       await navigator.clipboard.writeText(text);
       alert("Скопировано. Вставь в Telegram и отправь.");
-    } catch {
-      prompt("Скопируй текст и отправь:", text);
+    } catch (e) {
+      alert("Не удалось поделиться: " + (e?.message || e));
     }
   }
+  
   
 
 
