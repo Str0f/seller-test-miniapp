@@ -8,11 +8,7 @@ function clamp(n, min, max) {
   return Math.max(min, Math.min(max, n));
 }
 
-function track(event, params = {}) {
-  if (window.gtag) {
-    window.gtag("event", event, params);
-  }
-}
+
 
 
 /**
@@ -74,11 +70,7 @@ export default function App() {
   const total = questions.length;
   const AUTO_NEXT_DELAY_MS = 220;
 
-  useEffect(() => {
-    if (step === 0) {
-      track("start_test");
-    }
-  }, [step]);
+
   
   const [step, setStep] = useState(0); // 0..total, где total = экран результата
   const [answersByQid, setAnswersByQid] = useState({}); // { [qid]: answerId }
@@ -192,21 +184,7 @@ async function shareResult() {
       const text = buildShareText(p, s);
       const tg = getTelegram();
 
-    // === ШАГ 2.2: отправляем данные о результате ===
-      if (tg?.initDataUnsafe?.user) {
-        fetch("/api/track", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            tg_user_id: tg.initDataUnsafe.user.id,
-            username: tg.initDataUnsafe.user.username || null,
-            primary: p?.key,
-            secondary: s?.key || null,
-            created_at: new Date().toISOString()
-          })
-        });
-      }
-      // === конец шага 2.2 ===
+ 
 
     // Telegram share
       if (tg?.openTelegramLink) {
@@ -277,14 +255,7 @@ async function shareResult() {
     const p = profile.primary;
     const s = profile.secondary;
 
-    useEffect(() => {
-      if (isResult && profile.primary) {
-        track("finish_test", {
-          primary_type: profile.primary.key,
-          secondary_type: profile.secondary?.key || "none"
-        });
-      }
-    }, [isResult]);
+
     
 
     return (
