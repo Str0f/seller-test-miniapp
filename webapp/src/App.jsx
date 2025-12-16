@@ -439,9 +439,11 @@ export default function App() {
   <div className={styles.selection}>
             <div className={styles.hint}>
             {selectedAnswer ? `Выбрано: "${selectedAnswer.text}"` : "Выбери вариант, чтобы продолжить"}
+            {!isTelegram && (
             <div className={styles.kbdHint}>
                 Горячие клавиши: 1-4 - выбор, Enter - далее
             </div>
+            )}
             </div>
 
 
