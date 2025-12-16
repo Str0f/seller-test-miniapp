@@ -120,8 +120,10 @@ export default function App() {
   }, [q, selectedId]);
 
   const profile = useMemo(() => computeProfile(data, answersByQid), [answersByQid]);
+
   const p = profile.primary;
   const s = profile.secondary;
+  
 
 
 
