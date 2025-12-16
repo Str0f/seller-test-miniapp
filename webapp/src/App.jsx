@@ -65,6 +65,8 @@ function computeProfile(testData, answersByQid) {
 export default function App() {
   const questions = data.questions;
   const total = questions.length;
+  const AUTO_NEXT_DELAY_MS = 220;
+
 
   const [step, setStep] = useState(0); // 0..total, где total = экран результата
   const [answersByQid, setAnswersByQid] = useState({}); // { [qid]: answerId }
@@ -135,6 +137,15 @@ export default function App() {
       window.clearTimeout(selectAnswer._t);
       selectAnswer._t = window.setTimeout(() => setMicro(null), 900);
     }
+
+      // Автопереход в Telegram (удобно для мобильного)
+    if (isTelegram) {
+      window.clearTimeout(selectAnswer._next);
+      selectAnswer._next = window.setTimeout(() => {
+      setStep((s) => clamp(s + 1, 0, total));
+    }, AUTO_NEXT_DELAY_MS);
+    }
+
   }
   
 
