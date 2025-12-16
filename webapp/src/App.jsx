@@ -176,7 +176,40 @@ export default function App() {
   }
   
   
-  
+
+//сюда добавляем тему с логированием и track
+async function sendTrackResult() {
+  const tg = getTelegram();
+  const user = tg?.initDataUnsafe?.user;
+
+  if (!user || !p?.key) return;
+
+  // чтобы не слать дважды при перерендерах
+  if (sendTrackResult._sentFor === user.id) return;
+  sendTrackResult._sentFor = user.id;
+
+  try {
+    await fetch("/api/track", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tg_user_id: user.id,
+        username: user.username || null,
+        primary: p.key,
+        secondary: s?.key || null,
+        scores: profile.scores,
+        created_at: new Date().toISOString()
+      })
+    });
+  } catch (e) {
+    // не ломаем UX — просто молча игнорим
+    console.log("track failed", e);
+  }
+}
+
+
+
+
 
 
 async function shareResult() {
@@ -256,6 +289,11 @@ async function shareResult() {
     const s = profile.secondary;
 
 
+    useEffect(() => {
+      if (isTelegram) {
+        sendTrackResult();
+      }
+    }, []);
     
 
     return (
