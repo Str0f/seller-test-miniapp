@@ -417,3 +417,28 @@
     width: 100%;
   }
 }
+.footer {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.footer .primaryBtn {
+  width: 100%;
+}
+
+/* на мобилке делаем липкую панель */
+@media (max-width: 520px) {
+  .footer {
+    position: sticky;
+    bottom: 0;
+    padding: 12px 0 8px;
+    background: linear-gradient(
+      180deg,
+      rgba(0,0,0,0),
+      rgba(0,0,0,0.65) 35%,
+      rgba(0,0,0,0.85)
+    );
+  }
+}

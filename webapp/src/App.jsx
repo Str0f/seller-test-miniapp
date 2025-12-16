@@ -69,6 +69,7 @@ export default function App() {
   const [step, setStep] = useState(0); // 0..total, где total = экран результата
   const [answersByQid, setAnswersByQid] = useState({}); // { [qid]: answerId }
   const [micro, setMicro] = useState(null);
+  const [isTelegram, setIsTelegram] = useState(false);
 
 
 
@@ -89,7 +90,7 @@ export default function App() {
 
 
   
-      const [isTelegram, setIsTelegram] = useState(false);
+      
     
 
   const isResult = step >= total;
