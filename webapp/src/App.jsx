@@ -208,25 +208,18 @@ function startTest() {
 
   function selectAnswer(answerId) {
     const answer = q.answers.find((a) => a.id === answerId);
-    const msg = pickMicroByWeights(answer?.weights);
   
     setAnswersByQid((prev) => ({ ...prev, [q.id]: answerId }));
   
-    if (msg) {
-      setMicro(msg);
-      window.clearTimeout(selectAnswer._t);
-      selectAnswer._t = window.setTimeout(() => setMicro(null), 900);
-    }
-
-      // Автопереход в Telegram (удобно для мобильного)
+    // автопереход ТОЛЬКО в Telegram
     if (isTelegram) {
       window.clearTimeout(selectAnswer._next);
       selectAnswer._next = window.setTimeout(() => {
-      setStep((s) => clamp(s + 1, 0, total));
-    }, AUTO_NEXT_DELAY_MS);
+        setStep((s) => clamp(s + 1, 0, total));
+      }, AUTO_NEXT_DELAY_MS);
     }
-
   }
+  
   
 
   function buildShareText(p, s) {
@@ -614,7 +607,11 @@ if (isIntro) {
       </div>
 
             <div className={styles.footer}>
-            <button
+            
+            
+            
+            {!isTelegram && (
+  <button
     type="button"
     className={styles.primaryBtn}
     disabled={!selectedId}
@@ -622,6 +619,8 @@ if (isIntro) {
   >
     {isLast ? "Завершить" : "Далее"}
   </button>
+)}
+
 
   <div className={styles.selection}>
             <div className={styles.hint}>
