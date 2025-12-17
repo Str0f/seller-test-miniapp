@@ -3,6 +3,8 @@ import { initTelegram, getTelegram } from "./telegram";
 import { useEffect, useMemo, useState } from "react";
 import styles from "./App.module.css";
 import data from "./data/test.v1.json";
+import { useEffect, useMemo, useRef, useState } from "react";
+
 
 function clamp(n, min, max) {
   return Math.max(min, Math.min(max, n));
@@ -77,6 +79,11 @@ export default function App() {
   const [micro, setMicro] = useState(null);
   const [isTelegram, setIsTelegram] = useState(false);
 
+  //добавили трэк
+  const openSentRef = useRef(false);
+  const finishSentRef = useRef(false);
+
+
 
 
 
@@ -116,6 +123,67 @@ export default function App() {
   const p = profile.primary;
   const s = profile.secondary;
   
+
+
+//добавлена функция отправки в трэк
+
+async function sendEvent(eventName) {
+  const tg = getTelegram();
+  const user = tg?.initDataUnsafe?.user;
+  if (!user?.id) return;
+
+  const payload = {
+    tg_user_id: user.id,
+    username: user.username || null,
+    event: eventName
+  };
+
+  if (eventName === "finish") {
+    payload.primary_type = p?.key || null;
+    payload.secondary_type = s?.key || null;
+    payload.scores = profile?.scores || null;
+  }
+
+  fetch("/api/track", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  }).catch(() => {});
+}
+
+
+
+
+//завершение отпарвки в трэк 
+
+
+
+//4.4 и 4.5 и 4.6
+useEffect(() => {
+  if (!isTelegram) return;
+  if (openSentRef.current) return;
+  openSentRef.current = true;
+  sendEvent("open");
+}, [isTelegram]);
+
+useEffect(() => {
+  if (!isTelegram) return;
+  if (!isResult) return;
+  if (finishSentRef.current) return;
+  finishSentRef.current = true;
+  sendEvent("finish");
+}, [isTelegram, isResult]);
+
+function restart() {
+  openSentRef.current = false;
+  finishSentRef.current = false;
+  setStep(0);
+  setAnswersByQid({});
+}
+
+
+//интересно все ли ок
+
 
 
 
