@@ -1,6 +1,6 @@
 import { initTelegram, getTelegram } from "./telegram";
 
-import { useEffect, useMemo, useState } from "react";
+
 import styles from "./App.module.css";
 import data from "./data/test.v1.json";
 import { useEffect, useMemo, useRef, useState } from "react";
