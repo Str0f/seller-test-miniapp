@@ -536,3 +536,11 @@
     width: 100%;
   }
 }
+.introCta {
+  width: 100%;
+  margin-top: 16px;
+  height: 52px;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 16px;
+}

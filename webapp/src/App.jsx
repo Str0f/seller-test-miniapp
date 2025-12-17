@@ -318,7 +318,7 @@ async function shareResult() {
   }
 
 
-  
+
   useEffect(() => {
     if (isIntro) return;   // <-- ВОТ ЭТО ДОБАВИЛИ
     if (isResult) return;  // как было
@@ -391,9 +391,13 @@ if (isIntro) {
           </div>
         </div>
 
-        <button type="button" className={styles.primaryBtn} onClick={startTest}>
-          Узнать свой тип
-        </button>
+        <button
+  type="button"
+  className={`${styles.primaryBtn} ${styles.introCta}`}
+  onClick={startTest}
+>
+  Узнать свой тип
+</button>
       </div>
     </div>
   );
