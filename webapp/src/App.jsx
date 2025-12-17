@@ -5,6 +5,9 @@ import styles from "./App.module.css";
 import data from "./data/test.v1.json";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+const AUTO_NEXT_DELAY_MS = 220;
+
+
 
 function clamp(n, min, max) {
   return Math.max(min, Math.min(max, n));
@@ -70,7 +73,7 @@ function computeProfile(testData, answersByQid) {
 export default function App() {
   const questions = data.questions;
   const total = questions.length;
-  const AUTO_NEXT_DELAY_MS = 220;
+  //const AUTO_NEXT_DELAY_MS = 220;
 
 
   
