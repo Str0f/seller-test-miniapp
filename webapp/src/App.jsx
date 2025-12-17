@@ -634,10 +634,10 @@ if (isIntro) {
             </div>
 
 
-            <div className={styles.microSlot}>
+           {/* <div className={styles.microSlot}>
                 {micro ? <div className={styles.micro}>{micro}</div> : null}
             </div>
-
+            */}
   </div>
 </div>
 
