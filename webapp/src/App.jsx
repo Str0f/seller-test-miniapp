@@ -566,7 +566,7 @@ if (isIntro) {
 
 
 <details className={styles.card}>
-  <summary className={styles.detailsSummary}>Баллы (подробно)</summary>
+  <summary className={styles.detailsSummary}>Баллы (раскрыть подробно)</summary>
 
   <div className={styles.scoreList} style={{ marginTop: 12 }}>
     {profile.sorted.map(([k, v]) => (
@@ -625,7 +625,10 @@ if (isIntro) {
 
   <div className={styles.selection}>
             <div className={styles.hint}>
-            {selectedAnswer ? `Выбрано: "${selectedAnswer.text}"` : "Выбери вариант, чтобы продолжить"}
+            {selectedAnswer
+  ? (isTelegram ? null : `Выбрано: "${selectedAnswer.text}"`)
+  : "Выбери вариант, чтобы продолжить"}
+
             {!isTelegram && (
             <div className={styles.kbdHint}>
                 Горячие клавиши: 1-4 - выбор, Enter - далее
