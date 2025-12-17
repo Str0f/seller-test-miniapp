@@ -74,7 +74,7 @@ export default function App() {
 
 
   
-  const [step, setStep] = useState(0); // 0..total, где total = экран результата
+  const [step, setStep] = useState(-1); // -1 интро, 0 - ... вопросы, total - результат
   const [answersByQid, setAnswersByQid] = useState({}); // { [qid]: answerId }
   const [micro, setMicro] = useState(null);
   const [isTelegram, setIsTelegram] = useState(false);
@@ -105,13 +105,12 @@ export default function App() {
   
       
     
-
+  const isIntro = step < 0; //добавили с интро (ниже три строки обновили или проверили)
   const isResult = step >= total;
-  console.log("STATE", { step, total, isResult });
 
-  const q = !isResult ? questions[step] : null;
+  const q = !isIntro && !isResult ? questions[step] : null;
+  const selectedId = q ? (answersByQid[q.id] ?? null) : null;
 
-  const selectedId = !isResult && q ? (answersByQid[q.id] ?? null) : null;
 
   const selectedAnswer = useMemo(() => {
     if (!q || !selectedId) return null;
@@ -152,9 +151,9 @@ async function sendEvent(eventName) {
 }
 
 
-
-
 //завершение отпарвки в трэк 
+
+
 
 
 
@@ -177,13 +176,17 @@ useEffect(() => {
 function restart() {
   openSentRef.current = false;
   finishSentRef.current = false;
-  setStep(0);
+  setStep(-1); //возвращаем на интро
   setAnswersByQid({});
 }
 
 
 //интересно все ли ок
 
+//добавили функцию вперед с интро
+function startTest() {
+  setStep(0);
+}
 
 
 
@@ -350,6 +353,51 @@ async function shareResult() {
     setStep(0);
     setAnswersByQid({});
   }
+
+
+
+
+
+// ---------------- INTRO SCREEN ----------------
+if (isIntro) {
+  return (
+    <div className={styles.container}>
+      <div className={styles.introCard}>
+        <div className={styles.introTop}>
+          <div className={styles.introText}>
+            <h1 className={styles.introTitle}>Твой стиль продаж на маркетплейсах</h1>
+            <p className={styles.introSub}>
+              За 2-3 минуты разберём, как ты принимаешь решения, где твоя сила и где ты теряешь деньги.
+            </p>
+
+            <ul className={styles.introList}>
+              <li>Основной и вторичный тип селлера</li>
+              <li>Разбор по DISC, Юнгу и архетипам</li>
+              <li>Сильные стороны и зоны риска</li>
+              <li>Короткий план роста под твой тип</li>
+            </ul>
+
+            <div className={styles.introMeta}>
+              {total} вопросов - 4 варианта ответа - ~2 минуты
+            </div>
+          </div>
+
+          <div className={styles.introMedia}>
+            <img className={styles.introImg} src="/types/a.webp" alt="Type A" />
+            <img className={styles.introImg} src="/types/n.webp" alt="Type N" />
+          </div>
+        </div>
+
+        <button type="button" className={styles.primaryBtn} onClick={startTest}>
+          Узнать свой тип
+        </button>
+      </div>
+    </div>
+  );
+}
+
+
+
 
   // ---------------- RESULT SCREEN ----------------
   if (isResult) {
@@ -534,14 +582,10 @@ async function shareResult() {
 
   return (
     <div className={styles.container}>
-<div className={styles.progressDots} aria-label={`Вопрос ${step + 1} из ${total}`}>
-  {Array.from({ length: total }).map((_, i) => {
-    const isDone = i < step;
-    const isActive = i === step;
-    const cls = `${styles.dot} ${isActive ? styles.dotActive : ""} ${isDone ? styles.dotDone : ""}`;
-    return <span key={i} className={cls} />;
-  })}
+<div className={styles.progress}>
+  Вопрос {step + 1} из {total}
 </div>
+
 
       <h1 className={styles.title}>{q.title}</h1>
       <p className={styles.prompt}>{q.prompt}</p>
