@@ -620,7 +620,7 @@ if (isIntro) {
     disabled={!selectedId}
     onClick={next}
   >
-    {isLast ? "Завершить" : "Далее"} //изменено
+    {isLast ? "Завершить" : "Далее"} 
   </button>
 )}
 
