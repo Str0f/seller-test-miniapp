@@ -316,16 +316,19 @@ async function shareResult() {
     if (!selectedId) return;
     setStep((s) => clamp(s + 1, 0, total));
   }
+
+
+  
   useEffect(() => {
-    if (isResult) return; // на экране результата не обрабатываем
+    if (isIntro) return;   // <-- ВОТ ЭТО ДОБАВИЛИ
+    if (isResult) return;  // как было
   
     function onKeyDown(e) {
-      // не мешаем, если пользователь печатает в инпуте (на будущее)
       const tag = e.target?.tagName?.toLowerCase();
-      const isTyping = tag === "input" || tag === "textarea" || e.target?.isContentEditable;
+      const isTyping =
+        tag === "input" || tag === "textarea" || e.target?.isContentEditable;
       if (isTyping) return;
   
-      // 1-4: выбор вариантов
       if (e.key >= "1" && e.key <= "4") {
         const idx = Number(e.key) - 1;
         const answer = q?.answers?.[idx];
@@ -336,7 +339,6 @@ async function shareResult() {
         return;
       }
   
-      // Enter: Далее/Завершить
       if (e.key === "Enter") {
         if (!selectedId) return;
         e.preventDefault();
@@ -346,7 +348,8 @@ async function shareResult() {
   
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [isResult, q, selectedId]); // зависимости важны
+  }, [isIntro, isResult, q, selectedId]); // <-- и в зависимости добавили isIntro
+  
   
 
   function restart() {
