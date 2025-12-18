@@ -43,6 +43,23 @@ function computeProfile(testData, answersByQid) {
     }
   }
 
+
+  function getOrCreateWebUserId() {
+    try {
+      const key = "seller_test_uid";
+      let id = localStorage.getItem(key);
+      if (!id) {
+        id = `web:${crypto?.randomUUID?.() || `${Date.now()}_${Math.random().toString(16).slice(2)}`}`;
+        localStorage.setItem(key, id);
+      }
+      return id;
+    } catch {
+      // если localStorage недоступен
+      return `web:${Date.now()}_${Math.random().toString(16).slice(2)}`;
+    }
+  }
+  
+
   // sort by score desc
   const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
 
@@ -69,6 +86,12 @@ function computeProfile(testData, answersByQid) {
       : null
   };
 }
+
+
+
+
+
+
 
 export default function App() {
   const questions = data.questions;
@@ -132,11 +155,15 @@ export default function App() {
 async function sendEvent(eventName) {
   const tg = getTelegram();
   const user = tg?.initDataUnsafe?.user;
-  if (!user?.id) return;
+
+  const user_id = user?.id ? `tg:${user.id}` : getOrCreateWebUserId();
+  const source = user?.id ? "telegram" : "web";
 
   const payload = {
-    tg_user_id: user.id,
-    username: user.username || null,
+    user_id,
+    source,
+    tg_user_id: user?.id || null,
+    username: user?.username || null,
     event: eventName
   };
 
@@ -154,6 +181,7 @@ async function sendEvent(eventName) {
 }
 
 
+
 //завершение отпарвки в трэк 
 
 
@@ -162,14 +190,14 @@ async function sendEvent(eventName) {
 
 //4.4 и 4.5 и 4.6
 useEffect(() => {
-  if (!isTelegram) return;
+  //if (!isTelegram) return;
   if (openSentRef.current) return;
   openSentRef.current = true;
   sendEvent("open");
 }, [isTelegram]);
 
 useEffect(() => {
-  if (!isTelegram) return;
+ // if (!isTelegram) return;
   if (!isResult) return;
   if (finishSentRef.current) return;
   finishSentRef.current = true;

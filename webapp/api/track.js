@@ -15,18 +15,31 @@ export default async function handler(req, res) {
     );
 
     const b = req.body || {};
-    if (!b.tg_user_id || !b.event) {
-      return res.status(400).json({ ok: false, error: "missing tg_user_id/event" });
+
+    if (!b.event) {
+      return res.status(400).json({ ok: false, error: "missing event" });
     }
+    
+    const userId = b.user_id || (b.tg_user_id ? `tg:${b.tg_user_id}` : null);
+    if (!userId) {
+      return res.status(400).json({ ok: false, error: "missing user_id or tg_user_id" });
+    }
+    
 
     const { error } = await supabase.from("tg_events").insert({
-      tg_user_id: b.tg_user_id,
+      tg_user_id: b.tg_user_id || null,
+      user_id: userId,
+      source: b.source || (b.tg_user_id ? "telegram" : "web"),
       username: b.username || null,
       event: b.event,
       primary_type: b.primary_type || null,
       secondary_type: b.secondary_type || null,
       scores: b.scores || null
     });
+    
+
+
+
 
     if (error) return res.status(500).json({ ok: false, error: error.message });
     return res.status(200).json({ ok: true });
