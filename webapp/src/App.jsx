@@ -190,26 +190,27 @@ async function sendEvent(eventName) {
 
 //4.4 и 4.5 и 4.6
 useEffect(() => {
-  //if (!isTelegram) return;
   if (openSentRef.current) return;
   openSentRef.current = true;
   sendEvent("open");
-}, [isTelegram]);
+}, []);
+
 
 useEffect(() => {
- // if (!isTelegram) return;
   if (!isResult) return;
   if (finishSentRef.current) return;
   finishSentRef.current = true;
   sendEvent("finish");
-}, [isTelegram, isResult]);
+}, [isResult]);
+
 
 function restart() {
   openSentRef.current = false;
   finishSentRef.current = false;
-  setStep(-1); //возвращаем на интро
+  setStep(-1);
   setAnswersByQid({});
 }
+
 
 
 //интересно все ли ок
