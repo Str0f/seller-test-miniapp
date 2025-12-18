@@ -13,7 +13,19 @@ function clamp(n, min, max) {
   return Math.max(min, Math.min(max, n));
 }
 
-
+function getOrCreateWebUserId() {
+  try {
+    const key = "seller_test_uid";
+    let id = localStorage.getItem(key);
+    if (!id) {
+      id = `web:${crypto?.randomUUID?.() || `${Date.now()}_${Math.random().toString(16).slice(2)}`}`;
+      localStorage.setItem(key, id);
+    }
+    return id;
+  } catch {
+    return `web:${Date.now()}_${Math.random().toString(16).slice(2)}`;
+  }
+}
 
 
 /**
@@ -43,21 +55,7 @@ function computeProfile(testData, answersByQid) {
     }
   }
 
-
-  function getOrCreateWebUserId() {
-    try {
-      const key = "seller_test_uid";
-      let id = localStorage.getItem(key);
-      if (!id) {
-        id = `web:${crypto?.randomUUID?.() || `${Date.now()}_${Math.random().toString(16).slice(2)}`}`;
-        localStorage.setItem(key, id);
-      }
-      return id;
-    } catch {
-      // если localStorage недоступен
-      return `web:${Date.now()}_${Math.random().toString(16).slice(2)}`;
-    }
-  }
+  
   
 
   // sort by score desc
@@ -158,6 +156,7 @@ async function sendEvent(eventName) {
 
   const user_id = user?.id ? `tg:${user.id}` : getOrCreateWebUserId();
   const source = user?.id ? "telegram" : "web";
+  
 
   const payload = {
     user_id,
